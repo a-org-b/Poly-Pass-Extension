@@ -1,4 +1,4 @@
-import { ChromeMsg } from "./types";
+import { PRIV_STORAGE_KEY, TKeyStorage } from "./types";
 const v = "1.0"
 console.log("Starting WaSecure", v);
 import CryptoJS from "crypto-js"
@@ -8,12 +8,10 @@ window.onload = () => {
         return
     };
 
-    chrome.runtime.sendMessage<ChromeMsg, string>({
-        data: "",
-        type: "getprivkey"
-    }, (_privKey) => {
-        privKey = _privKey
+    chrome.storage.local.get(PRIV_STORAGE_KEY).then((r) => {
+        privKey = (r as TKeyStorage).privKey
     })
+
 
     const newComposeBtn = document.createElement("button")
     newComposeBtn.innerText = "Compose"

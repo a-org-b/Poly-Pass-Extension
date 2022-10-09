@@ -1,8 +1,3 @@
-export type ChromeMsg = {
-    type: "getprivkey",
-    data: string
-}
-
 export type TKeyStorage = {
     privKey: string
 }

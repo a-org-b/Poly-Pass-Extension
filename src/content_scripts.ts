@@ -1,8 +1,20 @@
 import { ChromeMsg } from "./types";
 const v = "1.0"
 console.log("Starting WaSecure", v);
+import CryptoJS from "crypto-js"
 
 window.onload = () => {
+    if (!window.location.href.startsWith("https://web.whatsapp.com/")) {
+        return
+    };
+
+    chrome.runtime.sendMessage<ChromeMsg, string>({
+        data: "",
+        type: "getprivkey"
+    }, (_privKey) => {
+        privKey = _privKey
+    })
+
     const newComposeBtn = document.createElement("button")
     newComposeBtn.innerText = "Compose"
     newComposeBtn.style.position = "fixed"
@@ -25,7 +37,7 @@ window.onload = () => {
 const documentChanged: MutationCallback = (a, b) => {
     a.forEach(element => {
         if (element.addedNodes.length || element.removedNodes.length) {
-            const msgElements = document.querySelectorAll<HTMLSpanElement>('div[data-testid="msg-container"] span[dir="ltr"] span')
+            const msgElements = document.querySelectorAll<HTMLSpanElement>('span[dir="ltr"].selectable-text.copyable-text span')
             msgElements.forEach(e => {
                 decryptText(e)
             })
@@ -33,39 +45,29 @@ const documentChanged: MutationCallback = (a, b) => {
     });
 
 }
-
-
+let privKey = ""
 
 function decryptText(ele: HTMLSpanElement) {
-    if (ele.innerText.startsWith("__")) {
-
-        chrome.runtime.sendMessage<ChromeMsg, string>({
-            data: ele.innerText.substring(2),
-            type: "decrypt"
-        }, (decryptText) => {
-            if (decryptText)
-                ele.innerText = decryptText
-        })
+    if (ele.innerText.startsWith("__") && privKey.length) {
+        const bytes = CryptoJS.AES.decrypt(ele.innerText.substring(2), privKey);
+        const originalText = bytes.toString(CryptoJS.enc.Utf8);
+        if (originalText) ele.innerText = originalText
     }
-
 }
 
 function encryptAndSend() {
     const inputSpanEle = document.querySelector('div[role="textbox"] span.selectable-text.copyable-text') as HTMLSpanElement
     const div_contentEdit = document.querySelector('div[role="textbox"][data-testid="conversation-compose-box-input"]')
-    chrome.runtime.sendMessage<ChromeMsg, string>({
-        data: inputSpanEle.innerText,
-        type: "encrypt"
-    }, (encryptedText) => {
-        var dT = null;
-        try { dT = new DataTransfer(); } catch (e) { }
-        var evt = new ClipboardEvent('paste', { clipboardData: dT });
-        evt.clipboardData?.setData('text/plain', "__" + encryptedText);
-        div_contentEdit?.dispatchEvent(evt)
+    var ciphertext = CryptoJS.AES.encrypt(inputSpanEle.innerText, privKey).toString();
+    var dT = null;
+    try { dT = new DataTransfer(); } catch (e) { }
+    var evt = new ClipboardEvent('paste', { clipboardData: dT });
+    evt.clipboardData?.setData('text/plain', "__" + ciphertext);
+    div_contentEdit?.dispatchEvent(evt)
 
-        setTimeout(() => {
-            const compose_btn = document.querySelector('button[data-testid="compose-btn-send"]') as HTMLButtonElement
-            compose_btn.click()
-        }, 100)
-    })
+    setTimeout(() => {
+        const compose_btn = document.querySelector('button[data-testid="compose-btn-send"]') as HTMLButtonElement
+        compose_btn.click()
+    }, 100)
+
 }

@@ -1,5 +1,5 @@
 export type ChromeMsg = {
-    type: "encrypt" | "decrypt",
+    type: "getprivkey",
     data: string
 }
 

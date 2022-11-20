@@ -1,6 +1,5 @@
-# Ondrip Extension
+# WaSecure Extension
 Chromium Extension for the WaSecure App
-
 
 # Prerequisite
 NodeJS, Yarn

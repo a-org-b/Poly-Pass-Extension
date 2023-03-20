@@ -1,15 +1,19 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useLinkClickHandler } from "react-router-dom";
 import { WalletContext } from "../../contexts/WalletContext";
+import { wallet_exist } from "../../wallet/wallet";
 
 const Unlock = () => {
   const [password, set_password] = useState("");
   const navigate = useNavigate();
   const wallet_context = useContext(WalletContext);
 
-  const on_unlock = () => {
-    wallet_context.unlock(password);
-    navigate("/wallet");
+  const go_to_wallet = () => navigate("/wallet");
+  useEffect(() => {
+    if (!wallet_exist()) navigate("/create");
+  }, []);
+  const on_unlock = async () => {
+    wallet_context.unlock(password).then(go_to_wallet);
   };
   return (
     <div>
@@ -20,6 +24,7 @@ const Unlock = () => {
         onChange={(e) => set_password(e.target.value)}
       />
       <button onClick={on_unlock}>Unlock</button>
+      <button>Go to wallet</button>
     </div>
   );
 };

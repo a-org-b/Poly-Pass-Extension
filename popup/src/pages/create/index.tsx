@@ -1,8 +1,14 @@
-import React, { useState } from "react";
-import { create_wallet } from "../../wallet/wallet";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { create_wallet, wallet_exist } from "../../wallet/wallet";
 
 const Create = () => {
   const [password, set_password] = useState("");
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (wallet_exist()) navigate("/wallet");
+  }, []);
   const on_create = () => {
     create_wallet(password);
   };

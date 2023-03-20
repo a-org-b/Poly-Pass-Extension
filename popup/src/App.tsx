@@ -1,25 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Wallet from "./pages/wallet";
+import Create from "./pages/create";
+import { WalletProvider } from "./contexts/WalletContext";
+import Unlock from "./pages/unlock";
+import MyPasswords from "./pages/my-passwords";
+
+const router = createBrowserRouter([
+  {
+    path: "/wallet",
+    element: <Wallet />,
+  },
+  {
+    path: "/create",
+    element: <Create />,
+  },
+  {
+    path: "/unlock",
+    element: <Unlock />,
+  },
+  {
+    path: "/my-passwords",
+    element: <MyPasswords />,
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <WalletProvider>
+      <RouterProvider router={router} />
+    </WalletProvider>
   );
 }
 

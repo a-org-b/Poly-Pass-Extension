@@ -9,8 +9,9 @@ const Create = () => {
   useEffect(() => {
     if (wallet_exist()) navigate("/wallet");
   }, []);
-  const on_create = () => {
-    create_wallet(password);
+  const on_create = async () => {
+    await create_wallet(password);
+    navigate("/wallet")
   };
   return (
     <div>

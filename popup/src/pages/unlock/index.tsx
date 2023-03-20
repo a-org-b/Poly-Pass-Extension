@@ -24,7 +24,6 @@ const Unlock = () => {
         onChange={(e) => set_password(e.target.value)}
       />
       <button onClick={on_unlock}>Unlock</button>
-      <button>Go to wallet</button>
     </div>
   );
 };

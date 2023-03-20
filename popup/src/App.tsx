@@ -7,6 +7,7 @@ import Create from "./pages/create";
 import { WalletProvider } from "./contexts/WalletContext";
 import Unlock from "./pages/unlock";
 import MyPasswords from "./pages/my-passwords";
+import PassDetails from "./pages/my-passwords/pass-details";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/my-passwords",
     element: <MyPasswords />,
+  },
+  {
+    path: "/my-passwords/:id",
+    element: <PassDetails />,
   },
 ]);
 

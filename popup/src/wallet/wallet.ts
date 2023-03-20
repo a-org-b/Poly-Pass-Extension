@@ -2,6 +2,11 @@ import { ethers, Wallet } from "ethers";
 
 export const WALLET_ENCRYPTED_KEY = "WALLET_ENCRYPTED"
 
+export const wallet_exist = () => {
+    const encrypted_json = localStorage.getItem(WALLET_ENCRYPTED_KEY)
+    return encrypted_json != null
+}
+
 export const get_wallet_from_local = async (password: string): Promise<Wallet> => {
     const encrypted_json = localStorage.getItem(WALLET_ENCRYPTED_KEY)
     if (!encrypted_json) throw new Error("Wallet not found")

@@ -19,12 +19,7 @@ import MyPasswords from "./pages/my-passwords";
 import PassDetails from "./pages/my-passwords/pass-details";
 
 function App() {
-  const wallet_context = useContext(WalletContext);
-  useEffect(() => {
-    console.log(wallet_context.wallet);
-  }, [wallet_context]);
-
-  const router = createMemoryRouter(
+  const router = createBrowserRouter(
     createRoutesFromElements([
       <Route path="/" element={<Navigate to="/wallet" />} />,
       <Route path="/my-passwords" element={<MyPasswords />} />,

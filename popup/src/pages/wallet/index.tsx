@@ -6,8 +6,6 @@ const Wallet = () => {
   const navigate = useNavigate();
   const wallet_context = useContext(WalletContext);
   useEffect(() => {
-    console.log(wallet_context);
-
     if (!wallet_context.wallet) {
       navigate("/unlock");
     }

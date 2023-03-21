@@ -1,10 +1,32 @@
 import { ethers, Wallet } from "ethers";
 
 export const WALLET_ENCRYPTED_KEY = "WALLET_ENCRYPTED"
+export const WALLET_PRIV_KEY = "WALLET_PRIV_KEY"
+export const ERR_WALLET_NOT_FOUND = new Error("Wallet not found")
 
 export const wallet_exist = () => {
     const encrypted_json = localStorage.getItem(WALLET_ENCRYPTED_KEY)
     return encrypted_json != null
+}
+
+export const get_wallet_from_session = async (): Promise<Wallet> => {
+    if (chrome?.storage) {
+        const priv_key = await chrome.storage.session.get(WALLET_PRIV_KEY)
+        if (!priv_key) throw ERR_WALLET_NOT_FOUND
+        return new Wallet(priv_key[WALLET_PRIV_KEY])
+    } else {
+        const priv_key=sessionStorage.getItem(WALLET_PRIV_KEY)
+        if (!priv_key) throw ERR_WALLET_NOT_FOUND
+        return new Wallet(priv_key)
+    }
+}
+
+export const set_wallet_to_session = async (w:Wallet): Promise<void> => {
+    if (chrome?.storage) {
+        await chrome.storage.session.set({WALLET_PRIV_KEY:w.privateKey})
+    } else {
+       sessionStorage.setItem(WALLET_PRIV_KEY,w.privateKey)
+    }
 }
 
 export const get_wallet_from_local = async (password: string): Promise<Wallet> => {

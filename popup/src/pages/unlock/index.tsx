@@ -10,7 +10,8 @@ const Unlock = () => {
 
   const go_to_wallet = () => navigate("/wallet");
   useEffect(() => {
-    if (!wallet_exist()) navigate("/create");
+    if(wallet_context.wallet) navigate("/wallet")
+    if (!wallet_exist()) go_to_wallet()
   }, []);
   const on_unlock = async () => {
     wallet_context.unlock(password).then(go_to_wallet);

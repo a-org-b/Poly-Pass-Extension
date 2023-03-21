@@ -1,71 +1,113 @@
-import { PRIV_STORAGE_KEY, TKeyStorage } from "./types";
-const v = "1.0"
-console.log("Starting WaSecure", v);
-import CryptoJS from "crypto-js"
+import { CurrentParams, LOGIN_SUCCESS, Message, PARAMS_UPDATED } from "./types";
 
-window.onload = () => {
-    if (!window.location.href.startsWith("https://web.whatsapp.com/")) {
-        return
-    };
+const v = "1.0";
+console.log("Starting Poly Pass", v);
+const success_save = document.createElement("div");
+success_save.innerHTML = `
+<div style="
+position:fixed;
+top:4%;
+left:4%;
+border-radius:12px;
+padding:8px;
+color:black;
+background-color:white;
+-webkit-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
+-moz-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
+box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
+">
+ Save to passwords? </div>`;
+chrome.runtime.onMessage.addListener((m:Message<any>,sender)=>{
+  if(m.key==LOGIN_SUCCESS){
+  document.getElementsByTagName("body")[0].appendChild(success_save)
+  }
+})
 
-    chrome.storage.local.get(PRIV_STORAGE_KEY).then((r) => {
-        privKey = (r as TKeyStorage).privKey
-    })
+const on_load = () => {
+  
+  
+  const username_element: HTMLInputElement | null =
+    document.querySelector('input[id="email"]') ||
+    document.querySelector('input[name="email"]') ||
+    document.querySelector('input[type="email"]') ||
+    document.querySelector('input[name="username"]') ||
+    document.querySelector('input[name="userid"]') ||
+    document.querySelector('input[name="login"]') ||
+    document.querySelector('input[id="username"]') ||
+    document.querySelector('input[id="userid"]') ||
+    document.querySelector('input[autocomplete="username"]');
 
+    const password_element: HTMLInputElement | null =
+    document.querySelector('input[id="password"]') ||
+    document.querySelector('input[type="password"]') ||
+    document.querySelector('input[name="password"]') ||
+    document.querySelector('input[autocomplete="password"]');
+    let username_value = "";
+    let password_value = "";
 
-    const newComposeBtn = document.createElement("button")
-    newComposeBtn.innerText = "Compose"
-    newComposeBtn.style.position = "fixed"
-    newComposeBtn.style.right = "4%"
-    newComposeBtn.style.bottom = "4%"
-    newComposeBtn.style.zIndex = "100"
-    newComposeBtn.addEventListener("click", encryptAndSend)
-    document.body.appendChild(newComposeBtn)
-
-    MutationObserver = window.MutationObserver;
-
-    var observer = new MutationObserver(documentChanged);
-
-    observer.observe(document, {
-        subtree: true,
-        childList: true
-    });
-}
-
-const documentChanged: MutationCallback = (a, b) => {
-    a.forEach(element => {
-        if (element.addedNodes.length || element.removedNodes.length) {
-            const msgElements = document.querySelectorAll<HTMLSpanElement>('span[dir="ltr"].selectable-text.copyable-text span')
-            msgElements.forEach(e => {
-                decryptText(e)
-            })
+    const update_inputs = (e:Event)=>{
+      username_value = username_element?.value ?? "";
+      password_value = password_element?.value ?? "";
+      const new_msg :Message<CurrentParams> = {
+        key:PARAMS_UPDATED,
+        body:{
+          username:username_value,
+          password:password_value,
+          website:location.href
         }
-    });
-
-}
-let privKey = ""
-
-function decryptText(ele: HTMLSpanElement) {
-    if (ele.innerText.startsWith("__") && privKey.length) {
-        const bytes = CryptoJS.AES.decrypt(ele.innerText.substring(2), privKey);
-        const originalText = bytes.toString(CryptoJS.enc.Utf8);
-        if (originalText) ele.innerText = originalText
+      }
+      
+      chrome.runtime.sendMessage(new_msg)
     }
-}
+    password_element?.addEventListener("change", update_inputs);
+    password_element?.addEventListener("focus", update_inputs);
+    password_element?.addEventListener("keypress", update_inputs);
+  username_element?.addEventListener("change", update_inputs);
+  username_element?.addEventListener("focus", update_inputs);
+  username_element?.addEventListener("keypress", update_inputs);
+  if (!username_element) return;
+  const input_height = username_element?.clientHeight;
 
-function encryptAndSend() {
-    const inputSpanEle = document.querySelector('div[role="textbox"] span.selectable-text.copyable-text') as HTMLSpanElement
-    const div_contentEdit = document.querySelector('div[role="textbox"][data-testid="conversation-compose-box-input"]')
-    var ciphertext = CryptoJS.AES.encrypt(inputSpanEle.innerText, privKey).toString();
-    var dT = null;
-    try { dT = new DataTransfer(); } catch (e) { }
-    var evt = new ClipboardEvent('paste', { clipboardData: dT });
-    evt.clipboardData?.setData('text/plain', "__" + ciphertext);
-    div_contentEdit?.dispatchEvent(evt)
+  const drop_down_element = document.createElement("div");
+  drop_down_element.innerHTML = `
+    <div style="
+    display:none;
+    position:fixed;
+    top:12%;
+    left:4%;
+    ">
+     1. Facebook </div>`;
+  if (!input_height) return;
+  const drop_down_btn_element = document.createElement("div");
+  drop_down_btn_element.innerHTML = `
+    <div style="
+    display:inline;
+    position:fixed;
+    top:4%;
+    left:4%;
+    background-color:white;
+    -webkit-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
+    -moz-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
+    box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
+     border-radius:12px;
+     padding:8px;
+     ">View login</div>`;
+  username_element?.parentElement?.appendChild(drop_down_btn_element);
+  username_element?.parentElement?.appendChild(drop_down_element);
 
-    setTimeout(() => {
-        const compose_btn = document.querySelector('button[data-testid="compose-btn-send"]') as HTMLButtonElement
-        compose_btn.click()
-    }, 100)
+  drop_down_btn_element.onclick = () => {
+    const _ele = drop_down_element.firstElementChild as HTMLElement
+    if ((_ele)?.style.display == "none")
+    _ele.style.display = "block";
+    else _ele.style.display = "none";
+  };
 
-}
+
+};
+
+window.onpopstate = function (event) {
+    console.log("URL changed: " + document.location.href);
+  };
+window.onload = () => {
+  setTimeout(on_load, 2000);
+};

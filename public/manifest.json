@@ -1,6 +1,6 @@
 {
-  "name": "WaSecure",
-  "description": "Real end-to-end encryption",
+  "name": "Poly Pass",
+  "description": "Real Secure Password Manager",
   "version": "0.3",
   "manifest_version": 3,
   "permissions": [
@@ -19,12 +19,15 @@
       "run_at": "document_end"
     }
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "host_permissions": [
     "*://*/*"
   ],
   "action": {
     "default_icon": "assets/images/icon.png",
-    "default_popup": "html/index.html",
+    "default_popup": "index.html",
     "default_title": "WA Secure Extension"
   }
 }

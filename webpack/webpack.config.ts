@@ -15,7 +15,8 @@ scripts.forEach(pathOfFile => {
 const webPackConfig: webpack.Configuration = {
   entry: {
     ...scriptEntries,
-    content_scripts: path.resolve(__dirname, "..", "src", "content_scripts.ts")
+    content_scripts: path.resolve(__dirname, "..", "src", "content_scripts.ts"),
+    background: path.resolve(__dirname, "..", "src", "background.ts")
   },
   output: {
     path: path.join(__dirname, "../dist"),

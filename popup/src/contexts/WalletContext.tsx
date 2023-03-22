@@ -7,7 +7,7 @@ type WalletContextType = {
   lock: () => void;
   unlock: (password: string) => Promise<void>;
   count: number;
-  load_wallet_from_session:()=>Promise<Wallet|undefined>
+  get_wallet:()=>Promise<Wallet|undefined>
 };
 export let WalletContext: React.Context<WalletContextType>;
 
@@ -18,6 +18,10 @@ export function WalletProvider(props: React.PropsWithChildren) {
   const lock = () => {
     set_wallet(undefined);
   };
+
+  const get_wallet = async ():Promise<Wallet|undefined>=>{
+    return wallet ?? await load_wallet_from_session()
+  }
 
   const load_wallet_from_session = async ():Promise<Wallet|undefined>=>{
     try {
@@ -48,7 +52,7 @@ export function WalletProvider(props: React.PropsWithChildren) {
     lock,
     unlock,
     count,
-    load_wallet_from_session
+    get_wallet
   };
 
   WalletContext = React.createContext(value);

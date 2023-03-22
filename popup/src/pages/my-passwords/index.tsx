@@ -7,8 +7,7 @@ const MyPasswords = () => {
   const wallet_context = useContext(WalletContext);
 
   const check = async ()=>{
-    const _wallet = wallet_context.wallet?? await wallet_context.load_wallet_from_session()
-    if (!_wallet) navigate("/unlock");
+    if (!await wallet_context.get_wallet()) navigate("/unlock");
   }
   useEffect(() => {
     check()

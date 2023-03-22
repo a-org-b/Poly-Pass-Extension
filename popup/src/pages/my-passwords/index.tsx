@@ -5,8 +5,13 @@ import { WalletContext } from "../../contexts/WalletContext";
 const MyPasswords = () => {
   const navigate = useNavigate();
   const wallet_context = useContext(WalletContext);
+
+  const check = async ()=>{
+    const _wallet = wallet_context.wallet?? await wallet_context.load_wallet_from_session()
+    if (!_wallet) navigate("/unlock");
+  }
   useEffect(() => {
-    if (!wallet_context.wallet) navigate("/unlock");
+    check()
   }, [wallet_context]);
   return <div>MyPasswords</div>;
 };

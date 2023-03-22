@@ -11,7 +11,6 @@ const Wallet = () => {
     if (!wallet_context.wallet) {
       navigate("/unlock");
     }
-    console.log(get_passwords());
     
   }, [wallet_context, navigate]);
   return <div>{wallet_context.wallet?.address}</div>;

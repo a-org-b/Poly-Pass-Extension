@@ -27,11 +27,9 @@ const setDb = (): Polybase => {
 };
 
 export async function EncryptString(
-  str: string
+  str: string,
+  key: Uint8Array
 ): Promise<EncryptedDataAesCbc256> {
-  // This returns symmetric key as Uint8Array
-  const key = aescbc.generateSecretKey();
-
   // Convert string value to Uint8Array so it can be encrypted
   const strDataToBeEncrypted = decodeFromString(str, "utf8");
 
@@ -124,11 +122,23 @@ const getRecordByUrl = async (url: string) => {
   const records = await collectionReference.where("url", "==", url).get();
   console.log(records);
 };
+const testfn = () => {
+  // This returns symmetric key as Uint8Array
+  const key = aescbc.generateSecretKey();
 
+  var encryptstr = EncryptString("kkkkkkkkkk", key);
+  encryptstr.then((res) => {
+    var decryptstr = DecryptString(key, res).then((res) => {
+      return res.toString();
+    });
+    console.log(decryptstr);
+  });
+  //console.log(cipher);
+};
 const Records = () => {
   const handleSubmit: any = (e: SubmitEvent) => {
     e.preventDefault();
-    createRecord("usr", "pss", "url");
+    testfn();
   };
   return (
     <div>
@@ -145,6 +155,7 @@ const Records = () => {
       </form>
     </div>
   );
+  createRecord("usr", "pss", "url");
 };
 
 export default Records;

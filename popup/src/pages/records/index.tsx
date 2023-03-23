@@ -73,12 +73,19 @@ const createRecord = async (
   secondPart = ("000" + secondPart.toString(36)).slice(-3);
   var uuid = firstPart + secondPart;
 
+  const key = aescbc.generateSecretKey();
+
+  var encryptstr = await EncryptString(password, key);
+  const cipher_str = encodeToString(encryptstr.ciphertext, "base64");
+  const nonce_str = encodeToString(encryptstr.nonce, "base64");
+
+  var pass: string = cipher_str + " " + nonce_str;
   //push data
   const recordData = await collectionReference.create([
     uuid,
-    "gmail.com",
-    "incimew",
-    "notHashednew",
+    url,
+    username,
+    pass,
   ]);
 };
 
@@ -126,19 +133,28 @@ const testfn = () => {
   // This returns symmetric key as Uint8Array
   const key = aescbc.generateSecretKey();
 
-  var encryptstr = EncryptString("kkkkkkkkkk", key);
+  var encryptstr = EncryptString("weyy", key);
+  // encryptstr.then((res) => {
+  //   var decryptstr = DecryptString(key, res).then((res) => {
+  //     return res.toString();
+  //   });
+
   encryptstr.then((res) => {
-    var decryptstr = DecryptString(key, res).then((res) => {
-      return res.toString();
-    });
-    console.log(decryptstr);
+    console.log(res.ciphertext);
+    const str = encodeToString(res.ciphertext, "base64");
+    const uint8Array = decodeFromString(str, "base64");
+    console.log(uint8Array);
+    // var strDataAsUint8Array: Uint8Array = res.ciphertext;
+    // const str = encodeToString(strDataAsUint8Array, "utf8");
+    // console.log(encodeToString(res.ciphertext, "utf8"));
+    // console.log(encodeToString(res.nonce, "utf8"));
   });
   //console.log(cipher);
 };
 const Records = () => {
   const handleSubmit: any = (e: SubmitEvent) => {
     e.preventDefault();
-    testfn();
+    createRecord("usr", "pass1", "kek.com");
   };
   return (
     <div>
@@ -155,7 +171,6 @@ const Records = () => {
       </form>
     </div>
   );
-  createRecord("usr", "pss", "url");
 };
 
 export default Records;

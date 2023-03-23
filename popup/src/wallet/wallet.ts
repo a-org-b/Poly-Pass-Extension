@@ -195,3 +195,19 @@ const decryptMergedPass = async (encryptedPass : string) : Promise<string> => {
   var pass: string = await DecryptString(hardKey, encryptedInterface);
   return pass
 }
+
+const getAllRecords = async () => {
+  var db = setDb();
+  const collectionReference = db.collection("passwords");
+
+  const records = await collectionReference.get();
+  console.log(records);
+};
+
+const getRecordByUrl = async (url: string) => {
+  var db = setDb();
+  const collectionReference = db.collection("passwords");
+
+  const records = await collectionReference.where("url", "==", url).get();
+  console.log(records);
+};

@@ -1,5 +1,11 @@
-import { Password } from "./types";
+import { Password, WALLET_PRIV_KEY } from "./types";
 
+let priv_key: string | undefined = undefined;
+chrome.storage.session.onChanged.addListener((e) => {
+  if (e[WALLET_PRIV_KEY]) {
+    priv_key = e[WALLET_PRIV_KEY].newValue;
+  }
+});
 export const get_passwords = (): Password[] => {
   return [
     {

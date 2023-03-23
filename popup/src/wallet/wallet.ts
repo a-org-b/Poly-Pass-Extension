@@ -12,13 +12,21 @@ export const wallet_exist = () => {
 
 export const get_wallet_from_session = async (): Promise<Wallet> => {
   if (chrome?.storage) {
-    const priv_key = await chrome.storage.session.get("WALLET_PRIV_KEY");
+    const priv_key = await chrome.storage.session.get(WALLET_PRIV_KEY);
     if (!priv_key) throw ERR_WALLET_NOT_FOUND;
     return new Wallet(priv_key[WALLET_PRIV_KEY]);
   } else {
     const priv_key = sessionStorage.getItem(WALLET_PRIV_KEY);
     if (!priv_key) throw ERR_WALLET_NOT_FOUND;
     return new Wallet(priv_key);
+  }
+};
+
+export const clear_session_wallet = async () => {
+  if (chrome?.storage) {
+    await chrome.storage.session.remove(WALLET_PRIV_KEY);
+  } else {
+    sessionStorage.removeItem(WALLET_PRIV_KEY);
   }
 };
 

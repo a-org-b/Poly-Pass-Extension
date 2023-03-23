@@ -1,6 +1,6 @@
 import { Wallet } from "ethers";
 import React, { useEffect, useState } from "react";
-import { get_wallet_from_local, get_wallet_from_session, set_wallet_to_session } from "../wallet/wallet";
+import { get_wallet_from_local, get_wallet_from_session,clear_session_wallet, set_wallet_to_session } from "../wallet/wallet";
 
 type WalletContextType = {
   wallet: Wallet | undefined;
@@ -15,7 +15,8 @@ export function WalletProvider(props: React.PropsWithChildren) {
 
   const [wallet, set_wallet] = useState<Wallet>();
   const [count, set_count] = useState(0);
-  const lock = () => {
+  const lock = async () => {
+    await clear_session_wallet()
     set_wallet(undefined);
   };
 

@@ -13,7 +13,9 @@ const Wallet = () => {
     }
     
   }, [wallet_context, navigate]);
-  return <div>{wallet_context.wallet?.address}</div>;
+  return <div>
+    <button onClick={wallet_context.lock}>Unlock</button>
+    {wallet_context.wallet?.address}</div>;
 };
 
 export default Wallet;

@@ -84,29 +84,29 @@ const createRecord = async (
   ]);
 };
 
-const updatePassword = async () => {
+const updatePassword = async (id: string, password: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
   const recordData = await collectionReference
-    .record("8xmc6w")
-    .call("updatePassword", ["stillNotHashedhehe"]);
+    .record(id)
+    .call("updatePassword", [password]);
 };
 
-const updateUsername = async () => {
+const updateUsername = async (id: string, username: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
   const recordData = await collectionReference
-    .record("8xmc6w")
-    .call("updateUsername", ["newUsr123"]);
+    .record(id)
+    .call("updateUsername", [username]);
 };
 
-const getRecordById = async () => {
+const getRecordById = async (id: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
-  const { data, block } = await collectionReference.record("8xmc6w").get();
+  const { data, block } = await collectionReference.record(id).get();
   console.log(data);
 };
 const getAllRecords = async () => {
@@ -117,13 +117,11 @@ const getAllRecords = async () => {
   console.log(records);
 };
 
-const getRecordByUrl = async () => {
+const getRecordByUrl = async (url: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
-  const records = await collectionReference
-    .where("url", "==", "gmail.com")
-    .get();
+  const records = await collectionReference.where("url", "==", url).get();
   console.log(records);
 };
 

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { WalletContext } from "../contexts/WalletContext";
 
-type Password = {
+export type Password = {
   website: string;
   username: string;
   password: string;
@@ -15,6 +15,16 @@ export const usePolyBase = () => {
         password: "1234",
         username: "thisisommore",
         website: "www.ommore.me",
+      },
+      {
+        password: "1234",
+        username: "thisisommore",
+        website: "github.com",
+      },
+      {
+        password: "1234",
+        username: "thisisommoremax",
+        website: "github.com",
       },
     ];
   };

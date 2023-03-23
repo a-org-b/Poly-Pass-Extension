@@ -1,12 +1,7 @@
+import { Password } from "./hooks/usePolyBase";
 export const WALLET_ENCRYPTED_KEY = "WALLET_ENCRYPTED";
 export const WALLET_PRIV_KEY = "WALLET_PRIV_KEY";
 export const ERR_WALLET_NOT_FOUND = new Error("Wallet not found");
-
-export type Password = {
-  website: string;
-  username: string;
-  password: string;
-};
 
 export type TKeyStorage = {
   privKey: string;

@@ -17,9 +17,12 @@ import { WalletContext } from "./contexts/WalletContext";
 import Unlock from "./pages/unlock";
 import MyPasswords from "./pages/my-passwords";
 import PassDetails from "./pages/my-passwords/pass-details";
-
+import {GetPasswords, Message, MessageKey} from "./types"
+import { usePolyBase } from "./hooks/usePolyBase";
 function App() {
-  const router = createBrowserRouter(
+
+  const {get_passwords} = usePolyBase()
+  const router = createMemoryRouter(
     createRoutesFromElements([
       <Route path="/" element={<Navigate to="/wallet" />} />,
       <Route path="/my-passwords" element={<MyPasswords />} />,

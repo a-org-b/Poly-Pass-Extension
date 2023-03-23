@@ -7,7 +7,10 @@ import {
   encodeToString,
   EncryptedDataAesCbc256,
 } from "@polybase/util";
-
+const hardKey = decodeFromString(
+  "95tUuJPAkFV5r60rV12uEYoFErTIEXG7am6tMWzcvcU=",
+  "base64"
+); //95tUuJPAkFV5r60rV12uEYoFErTIEXG7am6tMWzcvcU=
 const setDb = (): Polybase => {
   const db = new Polybase({
     defaultNamespace:
@@ -59,6 +62,19 @@ export async function DecryptString(
 
   return str;
 }
+
+const genPass = async (password: string): Promise<string> => {
+  // const key = aescbc.generateSecretKey();
+
+  var encryptstr = await EncryptString(password, hardKey);
+  const cipher_str = encodeToString(encryptstr.ciphertext, "base64");
+  const nonce_str = encodeToString(encryptstr.nonce, "base64");
+
+  var pass: string = cipher_str + " " + nonce_str;
+  return pass;
+};
+
+const decryptPass = async (encryptedPass: string) => {};
 const createRecord = async (
   username: string,
   password: string,
@@ -73,19 +89,13 @@ const createRecord = async (
   secondPart = ("000" + secondPart.toString(36)).slice(-3);
   var uuid = firstPart + secondPart;
 
-  const key = aescbc.generateSecretKey();
-
-  var encryptstr = await EncryptString(password, key);
-  const cipher_str = encodeToString(encryptstr.ciphertext, "base64");
-  const nonce_str = encodeToString(encryptstr.nonce, "base64");
-
-  var pass: string = cipher_str + " " + nonce_str;
+  var encryptedPass = await genPass(password);
   //push data
   const recordData = await collectionReference.create([
     uuid,
     url,
     username,
-    pass,
+    encryptedPass,
   ]);
 };
 
@@ -112,7 +122,15 @@ const getRecordById = async (id: string) => {
   const collectionReference = db.collection("passwords");
 
   const { data, block } = await collectionReference.record(id).get();
-  console.log(data);
+  var encryptedPass: string = data["password"];
+  var splitEncryptedPass = encryptedPass.split(" ");
+  var encryptedInterface: EncryptedDataAesCbc256 = {
+    version: "aes-cbc-256/symmetric",
+    nonce: decodeFromString(splitEncryptedPass[1], "base64"),
+    ciphertext: decodeFromString(splitEncryptedPass[0], "base64"),
+  };
+  var pass: string = await DecryptString(hardKey, encryptedInterface);
+  console.log(pass);
 };
 const getAllRecords = async () => {
   var db = setDb();
@@ -129,33 +147,17 @@ const getRecordByUrl = async (url: string) => {
   const records = await collectionReference.where("url", "==", url).get();
   console.log(records);
 };
-const testfn = () => {
-  // This returns symmetric key as Uint8Array
-  const key = aescbc.generateSecretKey();
-
-  var encryptstr = EncryptString("weyy", key);
-  // encryptstr.then((res) => {
-  //   var decryptstr = DecryptString(key, res).then((res) => {
-  //     return res.toString();
-  //   });
-
-  encryptstr.then((res) => {
-    console.log(res.ciphertext);
-    const str = encodeToString(res.ciphertext, "base64");
-    const uint8Array = decodeFromString(str, "base64");
-    console.log(uint8Array);
-    // var strDataAsUint8Array: Uint8Array = res.ciphertext;
-    // const str = encodeToString(strDataAsUint8Array, "utf8");
-    // console.log(encodeToString(res.ciphertext, "utf8"));
-    // console.log(encodeToString(res.nonce, "utf8"));
-  });
-  //console.log(cipher);
-};
+const testfn = () => {};
 const Records = () => {
   const handleSubmit: any = (e: SubmitEvent) => {
     e.preventDefault();
-    createRecord("usr", "pass1", "kek.com");
+    getRecordById("3268mg");
   };
+  const handleSubmit2: any = (e: SubmitEvent) => {
+    e.preventDefault();
+    createRecord("usrfnl", "samplepass", "goolag");
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -167,6 +169,17 @@ const Records = () => {
           className="cursor-pointer border-2 p-1"
           type="submit"
           value="submit"
+        />
+      </form>
+      <form onSubmit={handleSubmit2}>
+        <label>
+          Name:
+          <input type="text" name="name" />
+        </label>
+        <input
+          className="cursor-pointer border-2 p-1"
+          type="submit"
+          value="send"
         />
       </form>
     </div>

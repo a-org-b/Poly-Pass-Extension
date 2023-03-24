@@ -131,7 +131,7 @@ const genPass = async (password: string): Promise<string> => {
   return pass;
 };
 
-const createRecord = async (
+export const createRecord = async (
   username: string,
   password: string,
   url: string
@@ -155,7 +155,7 @@ const createRecord = async (
   ]);
 };
 
-const updatePassword = async (id: string, password: string) => {
+export const updatePassword = async (id: string, password: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
@@ -166,7 +166,7 @@ const updatePassword = async (id: string, password: string) => {
     .call("updatePassword", [encryptedPass]);
 };
 
-const updateUsername = async (id: string, username: string) => {
+export const updateUsername = async (id: string, username: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
@@ -175,7 +175,7 @@ const updateUsername = async (id: string, username: string) => {
     .call("updateUsername", [username]);
 };
 
-const getRecordById = async (id: string) => {
+export const getRecordById = async (id: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
@@ -185,7 +185,7 @@ const getRecordById = async (id: string) => {
   data["password"] = pass
 };
 
-const decryptMergedPass = async (encryptedPass : string) : Promise<string> => {
+export const decryptMergedPass = async (encryptedPass : string) : Promise<string> => {
   var splitEncryptedPass = encryptedPass.split(" ");
   var encryptedInterface: EncryptedDataAesCbc256 = {
     version: "aes-cbc-256/symmetric",
@@ -196,15 +196,14 @@ const decryptMergedPass = async (encryptedPass : string) : Promise<string> => {
   return pass
 }
 
-const getAllRecords = async () => {
+export const getAllRecords = async () => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
   const records = await collectionReference.get();
-  console.log(records);
+  return records.data
 };
-
-const getRecordByUrl = async (url: string) => {
+export const getRecordByUrl = async (url: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 

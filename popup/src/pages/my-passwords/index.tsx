@@ -1,4 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../../contexts/WalletContext";
 import { getAllRecords } from "../../wallet/wallet";
@@ -6,7 +11,10 @@ import { CollectionRecordResponse } from "@polybase/client";
 
 const MyPasswords = () => {
   const [AllData, setAllData] = useState<CollectionRecordResponse<any>[]>([]);
-
+  const navigateDetails = (e: React.MouseEvent<HTMLElement>) => {
+    let id = "ok";
+    navigate(`/my-passwords/${id}`);
+  };
   const navigate = useNavigate();
   const wallet_context = useContext(WalletContext);
 
@@ -44,7 +52,10 @@ const MyPasswords = () => {
             </div>
           </div>
 
-          <button className="bg-[#496BE1] text-white w-16 font-medium rounded-3xl">
+          <button
+            className="bg-[#496BE1] text-white w-16 font-medium rounded-3xl"
+            onClick={navigateDetails}
+          >
             Fill
           </button>
         </div>

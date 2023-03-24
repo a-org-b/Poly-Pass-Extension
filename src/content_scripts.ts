@@ -6,6 +6,7 @@ import {
   MessageKey,
 } from "./types";
 
+let tried = false;
 const v = "1.0";
 console.log("Starting Poly Pass", v);
 const success_save = document.createElement("div");
@@ -69,7 +70,13 @@ const on_load = () => {
   username_element?.addEventListener("change", update_inputs);
   username_element?.addEventListener("focus", update_inputs);
   username_element?.addEventListener("keypress", update_inputs);
-  if (!username_element) return;
+  if (!username_element) {
+    if (!tried) {
+      tried = true;
+      setTimeout(on_load, 2000);
+    }
+    return;
+  }
   const input_height = username_element?.clientHeight;
   const new_msg: Message<GetPasswords> = {
     key: MessageKey.GET_PASSWORDS,
@@ -103,6 +110,7 @@ const on_load = () => {
     position:fixed;
     top:4%;
     left:4%;
+    z-index:9999;
     background-color:white;
     -webkit-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
     -moz-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);

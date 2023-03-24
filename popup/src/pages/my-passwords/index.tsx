@@ -11,8 +11,8 @@ import { CollectionRecordResponse } from "@polybase/client";
 
 const MyPasswords = () => {
   const [AllData, setAllData] = useState<CollectionRecordResponse<any>[]>([]);
-  const navigateDetails = (e: React.MouseEvent<HTMLElement>) => {
-    let id = "ok";
+
+  const navigateDetails = (id: string) => {
     navigate(`/my-passwords/${id}`);
   };
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const MyPasswords = () => {
 
           <button
             className="bg-[#496BE1] text-white w-16 font-medium rounded-3xl"
-            onClick={navigateDetails}
+            onClick={() => navigateDetails(item.data["id"])}
           >
             Fill
           </button>

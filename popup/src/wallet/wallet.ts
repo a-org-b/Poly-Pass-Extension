@@ -180,9 +180,8 @@ export const getRecordById = async (id: string) => {
   const collectionReference = db.collection("passwords");
 
   const { data, block } = await collectionReference.record(id).get();
-  var pass = await decryptMergedPass(data["password"])
-  console.log(pass)
-  data["password"] = pass
+  //var pass = await decryptMergedPass(data["password"])
+  return data
 };
 
 export const decryptMergedPass = async (encryptedPass : string) : Promise<string> => {

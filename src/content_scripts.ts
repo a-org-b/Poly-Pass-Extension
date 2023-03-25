@@ -16,7 +16,7 @@ position:fixed;
 top:4%;
 left:4%;
 border-radius:12px;
-padding:8px;
+padding:16px;
 color:black;
 background-color:white;
 z-index:9999;
@@ -26,8 +26,25 @@ box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
 ">
  Save to passwords? 
  <div>
- <button id="btn_yes">Yes</button>
- <button id="btn_no">No</button>
+ <button id="btn_yes" style="
+ margin: 3px 5px 3px 0;
+ padding: 5px 10px;
+ background-color: rgba(164, 229, 157, 255);
+ border-radius: 8px;
+ border: 2px solid rgba(164, 229, 157, 255);
+ color: rgba(44, 136, 33, 255);
+ cursor: pointer;">
+ Yes</button>
+ <button id="btn_no" style="
+ margin: 3px 5px 3px 0;
+ padding: 5px 10px;
+ border-radius: 6px;
+ border: none;
+ color: rgba(83, 169, 71, 255);
+ background: none;
+ cursor: pointer;
+ ">
+ No</button>
  </div>
  </div>`;
 chrome.runtime.onMessage.addListener((m: Message<any>, sender) => {
@@ -132,7 +149,7 @@ const on_load = () => {
     -moz-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
     box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
      border-radius:12px;
-     padding:8px;
+     padding:16px;
      color:black;
      ">View login</div>`;
     username_element?.parentElement?.appendChild(drop_down_btn_element);

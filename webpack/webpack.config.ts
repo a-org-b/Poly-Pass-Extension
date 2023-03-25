@@ -1,22 +1,22 @@
 import path from "path";
-import CopyPlugin from "copy-webpack-plugin"
+import CopyPlugin from "copy-webpack-plugin";
 import * as webpack from "webpack";
-import glob from "glob"
+import glob from "glob";
 
-let scripts = glob.sync("./src/scripts/**.ts")
+let scripts = glob.sync("./src/scripts/**.ts");
 
-let scriptEntries: { [key: string]: string; } = {}
-scripts.forEach(pathOfFile => {
-  let fileName = path.basename(pathOfFile)
-  let entryName = fileName.split(".")[0]
-  scriptEntries[entryName] = pathOfFile
-})
+let scriptEntries: { [key: string]: string } = {};
+scripts.forEach((pathOfFile) => {
+  let fileName = path.basename(pathOfFile);
+  let entryName = fileName.split(".")[0];
+  scriptEntries[entryName] = pathOfFile;
+});
 
 const webPackConfig: webpack.Configuration = {
   entry: {
     ...scriptEntries,
     content_scripts: path.resolve(__dirname, "..", "src", "content_scripts.ts"),
-    background: path.resolve(__dirname, "..", "src", "background.ts")
+    background: path.resolve(__dirname, "..", "src", "background.ts"),
   },
   output: {
     path: path.join(__dirname, "../dist"),
@@ -24,6 +24,20 @@ const webPackConfig: webpack.Configuration = {
   },
   resolve: {
     extensions: [".ts", ".js"],
+    fallback: {
+      os: false,
+      fs: false,
+      tls: false,
+      net: false,
+      path: false,
+      zlib: false,
+      http: false,
+      https: false,
+      stream: require.resolve("stream-browserify"),
+      crypto: false,
+      url: false,
+      "crypto-browserify": false,
+    },
   },
   module: {
     rules: [
@@ -39,6 +53,6 @@ const webPackConfig: webpack.Configuration = {
       patterns: [{ from: ".", to: ".", context: "public" }],
     }),
   ],
-}
+};
 
-export default webPackConfig
+export default webPackConfig;

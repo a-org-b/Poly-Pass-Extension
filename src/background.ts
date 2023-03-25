@@ -1,11 +1,5 @@
 import { createRecord, getAllRecords, getRecordByUrl } from "./polybase";
-import {
-  CurrentParams,
-  GetPasswords,
-  Message,
-  MessageKey,
-  Password,
-} from "./types";
+import { CurrentParams, GetPasswords, Message, MessageKey } from "./types";
 
 const current_params: CurrentParams = {
   password: "",
@@ -13,7 +7,7 @@ const current_params: CurrentParams = {
   website: "",
 };
 
-let passwords_for_requested_website: Data[];
+let passwords_for_requested_website: Data[] = [];
 
 chrome.tabs.onUpdated.addListener((id, change, tab) => {
   const change_url = change.url?.replace(/\/+$/, "");
@@ -30,6 +24,7 @@ chrome.tabs.onUpdated.addListener((id, change, tab) => {
       const new_message: Message<any> = {
         key: MessageKey.LOGIN_SUCCESS,
       };
+      console.log("let c", passwords_for_requested_website);
 
       let exist = passwords_for_requested_website.find((e) => {
         const params_website = new URL(current_params.website).hostname;
@@ -46,13 +41,15 @@ chrome.tabs.onUpdated.addListener((id, change, tab) => {
         chrome.tabs.query(
           { active: true, currentWindow: true },
           function (tabs) {
-            chrome.tabs.sendMessage(tabs?.[0].id ?? 0, new_message);
+            if (!tabs.length) throw new Error("Tab not found");
+            chrome.tabs.sendMessage(tabs?.[0]?.id ?? 0, new_message);
           }
         );
-      }, 300);
+      }, 500);
     }
   }
 });
+
 export interface Data {
   id: string;
   password: string;
@@ -69,13 +66,14 @@ export interface PublicKey {
   x: string;
   y: string;
 }
-chrome.runtime.onMessage.addListener(async (m: Message<any>, _, sendRes) => {
+
+type SendRes = (res: any) => void;
+const handle_chrome_messages = async (m: Message<any>, sendRes: SendRes) => {
   console.log("messag rec", m);
 
   if (m.key == MessageKey.GET_PASSWORDS) {
     const body = m.body as GetPasswords;
-    const passwords = await getRecordByUrl(body.domain);
-    passwords_for_requested_website = passwords.data.map((e) => e.data);
+    passwords_for_requested_website = await getRecordByUrl(body.domain);
 
     sendRes(passwords_for_requested_website);
     return true;
@@ -108,4 +106,8 @@ chrome.runtime.onMessage.addListener(async (m: Message<any>, _, sendRes) => {
     return true;
   }
   return false;
+};
+chrome.runtime.onMessage.addListener((m, _, s) => {
+  handle_chrome_messages(m, s).then(s);
+  return true;
 });

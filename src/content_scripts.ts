@@ -19,6 +19,7 @@ border-radius:12px;
 padding:8px;
 color:black;
 background-color:white;
+z-index:9999;
 -webkit-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
 -moz-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
 box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
@@ -104,6 +105,8 @@ const on_load = () => {
     },
   };
   chrome.runtime.sendMessage(new_msg, (res: GetPasswordRes) => {
+    console.log("get pass res", res);
+
     if (!res) {
       return;
     }

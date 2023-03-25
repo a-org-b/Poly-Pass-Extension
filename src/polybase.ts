@@ -1,4 +1,4 @@
-import { Data, Password, WALLET_PRIV_KEY } from "./types";
+import { Data, WALLET_PRIV_KEY } from "./types";
 import { Polybase } from "@polybase/client";
 import { ethPersonalSign } from "@polybase/eth";
 import {
@@ -8,28 +8,27 @@ import {
   EncryptedDataAesCbc256,
 } from "@polybase/util";
 
-let priv_key: string | undefined = undefined;
+import { Buffer } from "buffer";
+globalThis.Buffer = Buffer;
+import { ethers, Wallet } from "ethers";
+let wallet: Wallet | undefined;
 chrome.storage.session.onChanged.addListener((e) => {
   if (e[WALLET_PRIV_KEY]) {
-    priv_key = e[WALLET_PRIV_KEY].newValue;
+    wallet = new Wallet(e[WALLET_PRIV_KEY].newValue);
   }
 });
 
-const hardKey = decodeFromString(
-  "95tUuJPAkFV5r60rV12uEYoFErTIEXG7am6tMWzcvcU=",
-  "base64"
-); //95tUuJPAkFV5r60rV12uEYoFErTIEXG7am6tMWzcvcU=
 const setDb = (): Polybase => {
+  if (!wallet) {
+    throw new Error("Wallet not unlocked");
+  }
   const db = new Polybase({
     defaultNamespace:
       "pk/0x76c342f1696f2e368454ed296df1ead894232b009084f6cb71670881506e0ee6e3fa1b3ea51a3010afa63cb41559eeab504a706138942d597dfd39d856955d45/polyPass",
     signer: (data) => {
       return {
         h: "eth-personal-sign",
-        sig: ethPersonalSign(
-          "0x79d1fcf6d9334cedc837ee3f9d2c54b7294aa702ed07f6f77f8a49235a9f9114",
-          data
-        ),
+        sig: ethPersonalSign(wallet?.privateKey ?? "", data),
       };
     },
   });
@@ -73,7 +72,11 @@ export async function DecryptString(
 
 const genPass = async (password: string): Promise<string> => {
   // const key = aescbc.generateSecretKey();
-
+  if (!wallet) {
+    throw new Error("Wallet not unlocked");
+    return "";
+  }
+  const hardKey = decodeFromString(wallet.privateKey, "hex");
   var encryptstr = await EncryptString(password, hardKey);
   const cipher_str = encodeToString(encryptstr.ciphertext, "base64");
   const nonce_str = encodeToString(encryptstr.nonce, "base64");
@@ -145,6 +148,11 @@ export const decryptMergedPass = async (
     nonce: decodeFromString(splitEncryptedPass[1], "base64"),
     ciphertext: decodeFromString(splitEncryptedPass[0], "base64"),
   };
+  if (!wallet) {
+    throw new Error("Wallet not unlocked");
+    return "";
+  }
+  const hardKey = decodeFromString(wallet.privateKey, "hex");
   var pass: string = await DecryptString(hardKey, encryptedInterface);
   return pass;
 };
@@ -156,12 +164,30 @@ export const getAllRecords = async () => {
   const records = await collectionReference.get();
   return records.data;
 };
-export const getRecordByUrl = async (url: string) => {
+export const getRecordByUrl = async (url: string): Promise<Data[]> => {
   var db = setDb();
   const collectionReference = db.collection<Data>("passwords");
+  if (!wallet) {
+    throw new Error("Wallet not unlocked");
+    return [];
+  }
 
-  const records = await collectionReference.where("url", "==", url).get();
-  console.log(records);
+  let publicKey = new ethers.SigningKey(wallet.privateKey).publicKey;
+  publicKey = "0x" + publicKey.slice(4);
+  console.log("public key", publicKey);
 
-  return records;
+  let records = await collectionReference
+    .where("url", "==", url)
+    .where("userId", "==", publicKey)
+    .get();
+  const new_data = await Promise.all(
+    records.data.map(async (e) => {
+      return {
+        ...e.data,
+        password: await decryptMergedPass(e.data.password),
+      };
+    })
+  );
+
+  return new_data;
 };

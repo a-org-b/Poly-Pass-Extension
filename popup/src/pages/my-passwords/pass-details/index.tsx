@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getRecordById } from "../../../wallet/wallet";
+import { deleteRecord, getRecordById } from "../../../wallet/wallet";
+
 const PassDetails = () => {
   let { id }: any = useParams();
+
+  const delRecord = (id: string): any => {
+    deleteRecord(id);
+  };
   interface record {
     id: string;
     password: string;
@@ -30,7 +35,12 @@ const PassDetails = () => {
     fetchData();
   }, []);
 
-  return <div>{Data.id}</div>;
+  return (
+    <div className="flex">
+      <div>{Data.id}</div>
+      <button onClick={() => delRecord(id)}>del</button>
+    </div>
+  );
 };
 
 export default PassDetails;

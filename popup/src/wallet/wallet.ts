@@ -209,3 +209,12 @@ export const getRecordByUrl = async (url: string) => {
   const records = await collectionReference.where("url", "==", url).get();
   console.log(records);
 };
+
+export const deleteRecord = async (id: string) => {
+  var db = setDb();
+  const collectionReference = db.collection("passwords");
+  const recordData = await collectionReference
+    .record(id)
+    .call("del");
+    console.log(recordData)
+}

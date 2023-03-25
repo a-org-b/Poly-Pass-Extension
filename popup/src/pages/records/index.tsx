@@ -79,9 +79,9 @@ const createRecord = async (
   //push data
   const recordData = await collectionReference.create([
     uuid,
-    "gmail.com",
-    "incimew",
-    "notHashednew",
+    url,
+    username,
+    password,
   ]);
 };
 
@@ -136,7 +136,7 @@ const testfn = () => {
 const Records = () => {
   const handleSubmit: any = (e: SubmitEvent) => {
     e.preventDefault();
-    testfn();
+    createRecord("usrsdf@.com", "pfsdfss@", "ursdfsdl@.com");
   };
   return (
     <div>
@@ -153,7 +153,6 @@ const Records = () => {
       </form>
     </div>
   );
-  createRecord("usr", "pss", "url");
 };
 
 export default Records;

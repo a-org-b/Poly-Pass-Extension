@@ -181,10 +181,12 @@ export const getRecordById = async (id: string) => {
 
   const { data, block } = await collectionReference.record(id).get();
   //var pass = await decryptMergedPass(data["password"])
-  return data
+  return data;
 };
 
-export const decryptMergedPass = async (encryptedPass : string) : Promise<string> => {
+export const decryptMergedPass = async (
+  encryptedPass: string
+): Promise<string> => {
   var splitEncryptedPass = encryptedPass.split(" ");
   var encryptedInterface: EncryptedDataAesCbc256 = {
     version: "aes-cbc-256/symmetric",
@@ -192,20 +194,19 @@ export const decryptMergedPass = async (encryptedPass : string) : Promise<string
     ciphertext: decodeFromString(splitEncryptedPass[0], "base64"),
   };
   var pass: string = await DecryptString(hardKey, encryptedInterface);
-  return pass
-}
+  return pass;
+};
 
 export const getAllRecords = async () => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
   const records = await collectionReference.get();
-  return records.data
+  return records.data;
 };
 export const getRecordByUrl = async (url: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
   const records = await collectionReference.where("url", "==", url).get();
-  console.log(records);
 };

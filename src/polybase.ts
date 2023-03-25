@@ -12,6 +12,9 @@ import { Buffer } from "buffer";
 globalThis.Buffer = Buffer;
 import { ethers, Wallet } from "ethers";
 let wallet: Wallet | undefined;
+chrome.storage.session.get(WALLET_PRIV_KEY).then((e) => {
+  wallet = new Wallet(e[WALLET_PRIV_KEY].newValue);
+});
 chrome.storage.session.onChanged.addListener((e) => {
   if (e[WALLET_PRIV_KEY]) {
     wallet = new Wallet(e[WALLET_PRIV_KEY].newValue);
@@ -135,7 +138,6 @@ export const getRecordById = async (id: string) => {
 
   const { data, block } = await collectionReference.record(id).get();
   var pass = await decryptMergedPass(data["password"]);
-  console.log(pass);
   data["password"] = pass;
 };
 
@@ -174,7 +176,6 @@ export const getRecordByUrl = async (url: string): Promise<Data[]> => {
 
   let publicKey = new ethers.SigningKey(wallet.privateKey).publicKey;
   publicKey = "0x" + publicKey.slice(4);
-  console.log("public key", publicKey);
 
   let records = await collectionReference
     .where("url", "==", url)

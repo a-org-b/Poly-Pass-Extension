@@ -22,10 +22,10 @@ import { usePolyBase } from "./hooks/usePolyBase";
 import Records from "./pages/records";
 function App() {
   const { get_passwords } = usePolyBase();
-  const router = createBrowserRouter(
+  const router = createMemoryRouter(
     createRoutesFromElements([
+      <Route path="/" element={<Navigate to="/my-passwords" />} />,
       <Route path="/records" element={<Records />} />,
-      <Route path="/" element={<Navigate to="/wallet" />} />,
       <Route path="/my-passwords" element={<MyPasswords />} />,
       <Route path="/create" element={<Create />} />,
       <Route path="/wallet" element={<Wallet />} />,

@@ -31,7 +31,6 @@ export async function EncryptString(
 ): Promise<EncryptedDataAesCbc256> {
   // This returns symmetric key as Uint8Array
   const key = aescbc.generateSecretKey();
-  console.log(key);
 
   // Convert string value to Uint8Array so it can be encrypted
   const strDataToBeEncrypted = decodeFromString(str, "utf8");
@@ -108,14 +107,12 @@ const getRecordById = async (id: string) => {
   const collectionReference = db.collection("passwords");
 
   const { data, block } = await collectionReference.record(id).get();
-  console.log(data);
 };
 const getAllRecords = async () => {
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
   const records = await collectionReference.get();
-  console.log(records);
 };
 
 const getRecordByUrl = async (url: string) => {
@@ -123,7 +120,6 @@ const getRecordByUrl = async (url: string) => {
   const collectionReference = db.collection("passwords");
 
   const records = await collectionReference.where("url", "==", url).get();
-  console.log(records);
 };
 const testfn = () => {
   var encryptstr = EncryptString("testt");
@@ -131,7 +127,6 @@ const testfn = () => {
     var cipher = res.ciphertext;
     return cipher;
   });
-  console.log(cipher);
 };
 const Records = () => {
   const handleSubmit: any = (e: SubmitEvent) => {

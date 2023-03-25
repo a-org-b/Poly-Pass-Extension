@@ -9,15 +9,15 @@ const Unlock = () => {
   const navigate = useNavigate();
   const wallet_context = useContext(WalletContext);
 
-  const go_to_wallet = () => navigate("/wallet");
+  const go_to_my_pass = () => navigate("/my-passwords");
   useEffect(() => {
     if (!wallet_exist()) navigate("/create");
     if (wallet_context.wallet) {
-      navigate("/wallet");
+      navigate("/my-passwords");
     }
   }, []);
   const on_unlock = async () => {
-    wallet_context.unlock(password).then(go_to_wallet);
+    wallet_context.unlock(password).then(go_to_my_pass);
   };
   return (
     <div className="h-96 flex">

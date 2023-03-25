@@ -33,13 +33,11 @@ box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
 chrome.runtime.onMessage.addListener((m: Message<any>, sender) => {
   if (m.key == MessageKey.LOGIN_SUCCESS) {
     document.getElementsByTagName("body")[0].appendChild(success_save);
-    console.log(document.getElementById("btn_yes"));
 
     document.getElementById("btn_yes")?.addEventListener("click", () => {
       const new_msg: Message<any> = {
         key: MessageKey.SAVE_PASSWORD,
       };
-      console.log("sending m", new_msg);
       chrome.runtime.sendMessage(new_msg);
     });
     document.getElementById("btn_no")?.addEventListener("click", () => {
@@ -69,8 +67,6 @@ const on_load = () => {
   let password_value = "";
 
   const update_inputs = (e: Event) => {
-    console.log("update vale", "kek");
-
     username_value = username_element?.value ?? "";
     password_value = password_element?.value ?? "";
     const new_msg: Message<CurrentParams> = {
@@ -105,8 +101,6 @@ const on_load = () => {
     },
   };
   chrome.runtime.sendMessage(new_msg, (res: GetPasswordRes) => {
-    console.log("get pass res", res);
-
     if (!res) {
       return;
     }

@@ -24,7 +24,6 @@ chrome.tabs.onUpdated.addListener((id, change, tab) => {
       const new_message: Message<any> = {
         key: MessageKey.LOGIN_SUCCESS,
       };
-      console.log("let c", passwords_for_requested_website);
 
       let exist = passwords_for_requested_website.find((e) => {
         const params_website = new URL(current_params.website).hostname;
@@ -69,8 +68,6 @@ export interface PublicKey {
 
 type SendRes = (res: any) => void;
 const handle_chrome_messages = async (m: Message<any>, sendRes: SendRes) => {
-  console.log("messag rec", m);
-
   if (m.key == MessageKey.GET_PASSWORDS) {
     const body = m.body as GetPasswords;
     passwords_for_requested_website = await getRecordByUrl(body.domain);
@@ -86,14 +83,7 @@ const handle_chrome_messages = async (m: Message<any>, sendRes: SendRes) => {
     return true;
   }
   if (m.key == MessageKey.SAVE_PASSWORD) {
-    console.log(current_params.website);
-
     const url_obj = new URL(current_params.website);
-    console.log("saving pasword", {
-      a: current_params.username,
-      b: current_params.password,
-      c: url_obj.hostname,
-    });
 
     await createRecord(
       current_params.username,

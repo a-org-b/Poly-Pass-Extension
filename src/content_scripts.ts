@@ -6,6 +6,7 @@ import {
   MessageKey,
 } from "./types";
 
+let tried = false;
 const v = "1.0";
 console.log("Starting Poly Pass", v);
 const success_save = document.createElement("div");
@@ -22,10 +23,27 @@ background-color:white;
 -moz-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
 box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
 ">
- Save to passwords? </div>`;
+ Save to passwords? 
+ <div>
+ <button id="btn_yes">Yes</button>
+ <button id="btn_no">No</button>
+ </div>
+ </div>`;
 chrome.runtime.onMessage.addListener((m: Message<any>, sender) => {
   if (m.key == MessageKey.LOGIN_SUCCESS) {
     document.getElementsByTagName("body")[0].appendChild(success_save);
+    console.log(document.getElementById("btn_yes"));
+
+    document.getElementById("btn_yes")?.addEventListener("click", () => {
+      const new_msg: Message<any> = {
+        key: MessageKey.SAVE_PASSWORD,
+      };
+      console.log("sending m", new_msg);
+      chrome.runtime.sendMessage(new_msg);
+    });
+    document.getElementById("btn_no")?.addEventListener("click", () => {
+      success_save.remove();
+    });
   }
 });
 
@@ -50,6 +68,8 @@ const on_load = () => {
   let password_value = "";
 
   const update_inputs = (e: Event) => {
+    console.log("update vale", "kek");
+
     username_value = username_element?.value ?? "";
     password_value = password_element?.value ?? "";
     const new_msg: Message<CurrentParams> = {
@@ -69,7 +89,13 @@ const on_load = () => {
   username_element?.addEventListener("change", update_inputs);
   username_element?.addEventListener("focus", update_inputs);
   username_element?.addEventListener("keypress", update_inputs);
-  if (!username_element) return;
+  if (!username_element) {
+    if (!tried) {
+      tried = true;
+      setTimeout(on_load, 2000);
+    }
+    return;
+  }
   const input_height = username_element?.clientHeight;
   const new_msg: Message<GetPasswords> = {
     key: MessageKey.GET_PASSWORDS,
@@ -103,6 +129,7 @@ const on_load = () => {
     position:fixed;
     top:4%;
     left:4%;
+    z-index:9999;
     background-color:white;
     -webkit-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);
     -moz-box-shadow: 10px 10px 88px -8px rgba(0,0,0,1);

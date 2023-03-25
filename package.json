@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/chrome": "^0.0.197",
+    "@types/chrome": "^0.0.225",
     "@types/crypto-js": "^4.1.1",
     "@types/glob": "^7.2.0",
     "@types/jquery": "^3.5.14",
@@ -23,6 +23,7 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
+    "@polybase/client": "0.3.25",
     "add": "^2.0.6",
     "crypto-js": "^4.1.1"
   }

@@ -95,7 +95,11 @@ const createRecord = async (
     uuid,
     url,
     username,
+<<<<<<< HEAD
     encryptedPass,
+=======
+    password,
+>>>>>>> main
   ]);
 };
 
@@ -147,11 +151,26 @@ const getRecordByUrl = async (url: string) => {
   const records = await collectionReference.where("url", "==", url).get();
   console.log(records);
 };
+<<<<<<< HEAD
 const testfn = () => {};
 const Records = () => {
   const handleSubmit: any = (e: SubmitEvent) => {
     e.preventDefault();
     getRecordById("3268mg");
+=======
+const testfn = () => {
+  var encryptstr = EncryptString("testt");
+  var cipher = encryptstr.then((res) => {
+    var cipher = res.ciphertext;
+    return cipher;
+  });
+  console.log(cipher);
+};
+const Records = () => {
+  const handleSubmit: any = (e: SubmitEvent) => {
+    e.preventDefault();
+    createRecord("usrsdf@.com", "pfsdfss@", "ursdfsdl@.com");
+>>>>>>> main
   };
   const handleSubmit2: any = (e: SubmitEvent) => {
     e.preventDefault();

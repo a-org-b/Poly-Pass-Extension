@@ -1,4 +1,4 @@
-import { Password, WALLET_PRIV_KEY } from "./types";
+import { Data, Password, WALLET_PRIV_KEY } from "./types";
 import { Polybase } from "@polybase/client";
 import { ethPersonalSign } from "@polybase/eth";
 import {
@@ -14,25 +14,6 @@ chrome.storage.session.onChanged.addListener((e) => {
     priv_key = e[WALLET_PRIV_KEY].newValue;
   }
 });
-export const get_passwords = (): Password[] => {
-  return [
-    {
-      password: "1234",
-      username: "thisisommore",
-      website: "www.ommore.me",
-    },
-    {
-      password: "study karo",
-      username: "thisisommore",
-      website: "github.com",
-    },
-    {
-      password: "1234",
-      username: "thisisommoremax",
-      website: "github.com",
-    },
-  ];
-};
 
 const hardKey = decodeFromString(
   "95tUuJPAkFV5r60rV12uEYoFErTIEXG7am6tMWzcvcU=",
@@ -52,7 +33,7 @@ const setDb = (): Polybase => {
       };
     },
   });
-  //const collectionReference = db.collection("passwords");
+  //const collectionReference = db.collection<Data>("passwords");
   return db;
 };
 
@@ -107,7 +88,7 @@ export const createRecord = async (
   url: string
 ) => {
   var db = setDb();
-  const collectionReference = db.collection("passwords");
+  const collectionReference = db.collection<Data>("passwords");
 
   var firstPart: any = (Math.random() * 46656) | 0;
   var secondPart: any = (Math.random() * 46656) | 0;
@@ -127,7 +108,7 @@ export const createRecord = async (
 
 export const updatePassword = async (id: string, password: string) => {
   var db = setDb();
-  const collectionReference = db.collection("passwords");
+  const collectionReference = db.collection<Data>("passwords");
 
   var encryptedPass = await genPass(password);
 
@@ -138,7 +119,7 @@ export const updatePassword = async (id: string, password: string) => {
 
 export const updateUsername = async (id: string, username: string) => {
   var db = setDb();
-  const collectionReference = db.collection("passwords");
+  const collectionReference = db.collection<Data>("passwords");
 
   const recordData = await collectionReference
     .record(id)
@@ -147,15 +128,17 @@ export const updateUsername = async (id: string, username: string) => {
 
 export const getRecordById = async (id: string) => {
   var db = setDb();
-  const collectionReference = db.collection("passwords");
+  const collectionReference = db.collection<Data>("passwords");
 
   const { data, block } = await collectionReference.record(id).get();
-  var pass = await decryptMergedPass(data["password"])
-  console.log(pass)
-  data["password"] = pass
+  var pass = await decryptMergedPass(data["password"]);
+  console.log(pass);
+  data["password"] = pass;
 };
 
-export const decryptMergedPass = async (encryptedPass : string) : Promise<string> => {
+export const decryptMergedPass = async (
+  encryptedPass: string
+): Promise<string> => {
   var splitEncryptedPass = encryptedPass.split(" ");
   var encryptedInterface: EncryptedDataAesCbc256 = {
     version: "aes-cbc-256/symmetric",
@@ -163,20 +146,22 @@ export const decryptMergedPass = async (encryptedPass : string) : Promise<string
     ciphertext: decodeFromString(splitEncryptedPass[0], "base64"),
   };
   var pass: string = await DecryptString(hardKey, encryptedInterface);
-  return pass
-}
+  return pass;
+};
 
 export const getAllRecords = async () => {
   var db = setDb();
-  const collectionReference = db.collection("passwords");
+  const collectionReference = db.collection<Data>("passwords");
 
   const records = await collectionReference.get();
-  return records.data
+  return records.data;
 };
 export const getRecordByUrl = async (url: string) => {
   var db = setDb();
-  const collectionReference = db.collection("passwords");
+  const collectionReference = db.collection<Data>("passwords");
 
   const records = await collectionReference.where("url", "==", url).get();
   console.log(records);
+
+  return records;
 };

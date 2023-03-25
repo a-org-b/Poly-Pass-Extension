@@ -1,7 +1,22 @@
 export const WALLET_ENCRYPTED_KEY = "WALLET_ENCRYPTED";
 export const WALLET_PRIV_KEY = "WALLET_PRIV_KEY";
 export const ERR_WALLET_NOT_FOUND = new Error("Wallet not found");
+export interface Data {
+  id: string;
+  password: string;
+  publicKey: PublicKey;
+  url: string;
+  username: string;
+}
 
+export interface PublicKey {
+  alg: string;
+  crv: string;
+  kty: string;
+  use: string;
+  x: string;
+  y: string;
+}
 export type Password = {
   website: string;
   username: string;
@@ -17,6 +32,7 @@ export enum MessageKey {
   PARAMS_UPDATED,
   LOGIN_SUCCESS,
   GET_PASSWORDS,
+  SAVE_PASSWORD,
 }
 
 export type CurrentParams = {

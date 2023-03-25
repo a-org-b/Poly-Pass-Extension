@@ -1,4 +1,4 @@
-import { get_passwords } from "./polybase";
+import { createRecord, getAllRecords, getRecordByUrl } from "./polybase";
 import {
   CurrentParams,
   GetPasswords,
@@ -13,7 +13,7 @@ const current_params: CurrentParams = {
   website: "",
 };
 
-let passwords_for_requested_website: Password[];
+let passwords_for_requested_website: Data[];
 
 chrome.tabs.onUpdated.addListener((id, change, tab) => {
   const change_url = change.url?.replace(/\/+$/, "");
@@ -37,7 +37,7 @@ chrome.tabs.onUpdated.addListener((id, change, tab) => {
         return (
           e.password == current_params.password &&
           e.username == current_params.username &&
-          e.website == params_website
+          e.url == params_website
         );
       });
 
@@ -47,23 +47,36 @@ chrome.tabs.onUpdated.addListener((id, change, tab) => {
           { active: true, currentWindow: true },
           function (tabs) {
             chrome.tabs.sendMessage(tabs?.[0].id ?? 0, new_message);
-            current_params.website = "";
-            current_params.username = "";
-            current_params.password = "";
           }
         );
       }, 300);
     }
   }
 });
+export interface Data {
+  id: string;
+  password: string;
+  publicKey: PublicKey;
+  url: string;
+  username: string;
+}
 
-chrome.runtime.onMessage.addListener((m: Message<any>, _, sendRes) => {
+export interface PublicKey {
+  alg: string;
+  crv: string;
+  kty: string;
+  use: string;
+  x: string;
+  y: string;
+}
+chrome.runtime.onMessage.addListener(async (m: Message<any>, _, sendRes) => {
+  console.log("messag rec", m);
+
   if (m.key == MessageKey.GET_PASSWORDS) {
     const body = m.body as GetPasswords;
-    const passwords = get_passwords();
-    passwords_for_requested_website = passwords.filter(
-      (e) => e.website == body.domain
-    );
+    const passwords = await getRecordByUrl(body.domain);
+    passwords_for_requested_website = passwords.data.map((e) => e.data);
+
     sendRes(passwords_for_requested_website);
     return true;
   }
@@ -72,6 +85,26 @@ chrome.runtime.onMessage.addListener((m: Message<any>, _, sendRes) => {
     current_params.username = body.username;
     current_params.password = body.password;
     current_params.website = body.website.replace(/\/+$/, "");
+    return true;
+  }
+  if (m.key == MessageKey.SAVE_PASSWORD) {
+    console.log(current_params.website);
+
+    const url_obj = new URL(current_params.website);
+    console.log("saving pasword", {
+      a: current_params.username,
+      b: current_params.password,
+      c: url_obj.hostname,
+    });
+
+    await createRecord(
+      current_params.username,
+      current_params.password,
+      url_obj.hostname
+    );
+    current_params.website = "";
+    current_params.username = "";
+    current_params.password = "";
     return true;
   }
   return false;

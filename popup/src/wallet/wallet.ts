@@ -156,6 +156,7 @@ export const createRecord = async (
 };
 
 export const updatePassword = async (id: string, password: string) => {
+
   var db = setDb();
   const collectionReference = db.collection("passwords");
 
@@ -164,9 +165,11 @@ export const updatePassword = async (id: string, password: string) => {
   const recordData = await collectionReference
     .record(id)
     .call("updatePassword", [encryptedPass]);
+
 };
 
 export const updateUsername = async (id: string, username: string) => {
+  console.log(username)
   var db = setDb();
   const collectionReference = db.collection("passwords");
 

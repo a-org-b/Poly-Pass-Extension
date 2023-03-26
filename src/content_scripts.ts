@@ -131,8 +131,12 @@ const on_load = () => {
     <div style="
     display:none;
     position:fixed;
-    top:12%;
-    left:4%;
+    top:10%;
+    left:4%;  
+    padding:16px;
+    cursor: pointer;
+    background-color:#cdd5dd;
+    z-index:9999;
     ">
    ${list_str} </div>`;
     if (!input_height) return;
@@ -151,6 +155,7 @@ const on_load = () => {
      border-radius:12px;
      padding:16px;
      color:black;
+     cursor: pointer;
      ">View login</div>`;
     username_element?.parentElement?.appendChild(drop_down_btn_element);
     username_element?.parentElement?.appendChild(drop_down_element);

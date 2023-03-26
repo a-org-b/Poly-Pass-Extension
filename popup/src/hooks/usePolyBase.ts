@@ -38,16 +38,17 @@ export const usePolyBase = () => {
   };
 
   const setDb = (): Polybase => {
+    if (!wallet) {
+      throw new Error("Wallet not unlocked");
+    }
+
     const db = new Polybase({
       defaultNamespace:
         "pk/0x76c342f1696f2e368454ed296df1ead894232b009084f6cb71670881506e0ee6e3fa1b3ea51a3010afa63cb41559eeab504a706138942d597dfd39d856955d45/polyPass",
       signer: (data) => {
         return {
           h: "eth-personal-sign",
-          sig: ethPersonalSign(
-            "0x79d1fcf6d9334cedc837ee3f9d2c54b7294aa702ed07f6f77f8a49235a9f9114",
-            data
-          ),
+          sig: ethPersonalSign(wallet?.privateKey, data),
         };
       },
     });

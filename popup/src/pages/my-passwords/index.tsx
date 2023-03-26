@@ -11,7 +11,7 @@ import { usePolyBase } from "../../hooks/usePolyBase";
 
 const MyPasswords = () => {
   const [AllData, setAllData] = useState<CollectionRecordResponse<any>[]>([]);
-const {get_all_my_records} = usePolyBase()
+  const { get_all_my_records } = usePolyBase();
   const navigateDetails = (id: string) => {
     navigate(`/my-passwords/${id}`);
   };
@@ -40,11 +40,6 @@ const {get_all_my_records} = usePolyBase()
       {AllData.map((item) => (
         <div className="flex justify-around py-5" key={item.data["id"]}>
           <div>
-            <img
-              src="https://pbs.twimg.com/profile_images/1636460024443596800/BgJKFm1i_400x400.jpg"
-              alt="logo"
-              className="inline-block h-10 -mt-7 rounded-full"
-            ></img>
             <div className="inline-block ml-4">
               <span className="text-lg font-medium">{item.data["url"]}</span>{" "}
               <br />

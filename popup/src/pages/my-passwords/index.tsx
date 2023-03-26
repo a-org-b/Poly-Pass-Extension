@@ -35,23 +35,27 @@ const MyPasswords = () => {
       <div className="py-5">
         <h1 className="text-2xl font-bold ml-4">PolyPass</h1>
 
-        <hr className="border-gray-300 mx-3" />
+        <hr className="border-gray-300 mx-3 mt-5" />
       </div>
       {AllData.map((item) => (
-        <div className="flex justify-around py-5" key={item.data["id"]}>
+        <div className="flex justify-around pb-5" key={item.data["id"]}>
           <div>
             <div className="inline-block ml-4">
-              <span className="text-lg font-medium">{item.data["url"]}</span>{" "}
+              <p className="text-lg inline-block font-medium w-28 whitespace-nowrap overflow-hidden text-ellipsis">
+                {item.data["url"]}
+              </p>{" "}
               <br />
-              <span className="text-gray-700">{item.data["username"]}</span>
+              <p className="text-gray-700 inline-block w-28 whitespace-nowrap overflow-hidden text-ellipsis">
+                {item.data["username"]}
+              </p>
             </div>
           </div>
 
           <button
-            className="bg-[#496BE1] text-white w-16 font-medium rounded-3xl"
+            className="fill-btn"
             onClick={() => navigateDetails(item.data["id"])}
           >
-            Fill
+            <span className="fill-btn-txt">Fill </span>
           </button>
         </div>
       ))}

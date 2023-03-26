@@ -21,20 +21,20 @@ const Unlock = () => {
   };
   return (
     <div className="h-96 flex">
-      <div className="mx-auto w-10/12 m-auto">
+      <div className="mx-auto w-9/12 m-auto">
         <Icon
           icon="material-symbols:lock"
-          className="text-gray-500 text-4xl text-center mx-auto"
+          className="text-gray-400 text-4xl mb-1"
         />
-        <p className="text-center mb-4">Wallet Is Locked</p>
+        <p className=" mb-2">Wallet Is Locked</p>
         <input
-          className="bg-gray-400 mt-3 rounded-md py-1 px-2 w-full text-black placeholder-black"
+          className="bg-gray-300 mt-1 rounded-md py-1 px-2 w-full text-black placeholder-black"
           type="password"
           placeholder="Password"
           onChange={(e) => set_password(e.target.value)}
         />
         <button
-          className="bg-blue-600 text-white mt-1 w-full rounded-md"
+          className="bg-blue-600 text-white mt-2 w-full rounded-md"
           onClick={on_unlock}
         >
           Unlock

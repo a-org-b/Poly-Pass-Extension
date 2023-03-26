@@ -13,12 +13,18 @@ globalThis.Buffer = Buffer;
 import { ethers, Wallet } from "ethers";
 let wallet: Wallet | undefined;
 chrome.storage.session.get(WALLET_PRIV_KEY).then((e) => {
-  wallet = new Wallet(e[WALLET_PRIV_KEY].newValue);
+  const privKey = e[WALLET_PRIV_KEY];
+  if (!privKey) {
+    chrome.tabs.create({ url: "index.html" });
+  }
+  wallet = new Wallet(privKey.newValue);
 });
 chrome.storage.session.onChanged.addListener((e) => {
-  if (e[WALLET_PRIV_KEY]) {
-    wallet = new Wallet(e[WALLET_PRIV_KEY].newValue);
+  const privKey = e[WALLET_PRIV_KEY];
+  if (!privKey) {
+    chrome.tabs.create({ url: "index.html" });
   }
+  wallet = new Wallet(privKey.newValue);
 });
 
 const setDb = (): Polybase => {

@@ -45,6 +45,7 @@ const PassDetails = () => {
   const [PassHidden, setPassHidden] = useState<boolean>(true);
   const delRecord = (id: string): any => {
     deleteRecord(id);
+    navigate("/my-passwords");
   };
 
   const editAll = () => {
@@ -59,7 +60,7 @@ const PassDetails = () => {
     <div>
       <div className="top flex flex-row bg-gray-200 align-middle mb-1 px-2 py-2">
         <button
-          onClick={() => navigate("/  my-passwords")}
+          onClick={() => navigate("/my-passwords")}
           className="back bg-blue-300 text-blue-700 mr-2 p-1 w-8 h-8 align-middle justify-center flex rounded-full font-semibold"
         >
           {" < "}

@@ -128,7 +128,7 @@ const on_load = () => {
     }
     const passwords = res;
     const list_str = passwords
-      .map((e) => `<p class="usernames" id="${e.password}"> ${e.username} </p>`)
+      .map((e) => `<p class="usernames" style="margin:-4px;" id="${e.password}"> ${e.username} </p>`)
       .join(" ");
 
     const drop_down_element = document.createElement("div");
@@ -139,10 +139,12 @@ const on_load = () => {
     top:10%;
     left:4%;  
     padding:16px;
-    cursor: pointer;
-    background-color:#cdd5dd;
-    z-index:9999;
-    ">
+    cursor:pointer;
+    color:black;
+    background-color: #eeeeee;
+    z-index: 9999;
+    border-radius: 10px;
+">
    ${list_str} </div>`;
     if (!input_height) return;
     const drop_down_btn_element = document.createElement("div");

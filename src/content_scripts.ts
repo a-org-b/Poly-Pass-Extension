@@ -65,18 +65,21 @@ chrome.runtime.onMessage.addListener((m: Message<any>, sender) => {
 
 const on_load = () => {
   const username_element: HTMLInputElement | null =
-    document.querySelector('input[id="email"]') ||
+    document.querySelector("input#email") ||
+    document.querySelector("input#loginUsername") ||
     document.querySelector('input[name="email"]') ||
     document.querySelector('input[type="email"]') ||
     document.querySelector('input[name="username"]') ||
     document.querySelector('input[name="userid"]') ||
     document.querySelector('input[name="login"]') ||
-    document.querySelector('input[id="username"]') ||
-    document.querySelector('input[id="userid"]') ||
+    document.querySelector("input#username") ||
+    document.querySelector("input#userid") ||
     document.querySelector('input[autocomplete="username"]');
+  console.log("username ele", username_element);
 
   const password_element: HTMLInputElement | null =
-    document.querySelector('input[id="password"]') ||
+    document.querySelector("input#password") ||
+    document.querySelector("input#loginPassword") ||
     document.querySelector('input[type="password"]') ||
     document.querySelector('input[name="password"]') ||
     document.querySelector('input[autocomplete="password"]');
@@ -84,6 +87,8 @@ const on_load = () => {
   let password_value = "";
 
   const update_inputs = (e: Event) => {
+    console.log("values updated");
+
     username_value = username_element?.value ?? "";
     password_value = password_element?.value ?? "";
     const new_msg: Message<CurrentParams> = {

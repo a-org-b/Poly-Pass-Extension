@@ -51,11 +51,12 @@ chrome.runtime.onMessage.addListener((m: Message<any>, sender) => {
   if (m.key == MessageKey.LOGIN_SUCCESS) {
     document.getElementsByTagName("body")[0].appendChild(success_save);
 
-    document.getElementById("btn_yes")?.addEventListener("click", () => {
+    document.getElementById("btn_yes")?.addEventListener("click", async () => {
       const new_msg: Message<any> = {
         key: MessageKey.SAVE_PASSWORD,
       };
-      chrome.runtime.sendMessage(new_msg);
+      await chrome.runtime.sendMessage(new_msg);
+      success_save.remove();
     });
     document.getElementById("btn_no")?.addEventListener("click", () => {
       success_save.remove();

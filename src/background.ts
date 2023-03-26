@@ -9,12 +9,15 @@ const current_params: CurrentParams = {
 
 let passwords_for_requested_website: Data[] = [];
 
+let tried_save_pass = 0;
 chrome.tabs.onUpdated.addListener((id, change, tab) => {
   const change_url = change.url?.replace(/\/+$/, "");
 
   if (change_url && current_params.website) {
     const url_parsed = new URL(change_url);
     const current_url_parsed = new URL(current_params.website);
+    console.log(change_url, current_params.website);
+
     if (
       url_parsed.hostname == current_url_parsed.hostname &&
       change_url != current_params.website &&
@@ -36,18 +39,40 @@ chrome.tabs.onUpdated.addListener((id, change, tab) => {
       });
 
       if (exist) return;
+      console.log("schedulig=ng");
+
       setTimeout(() => {
+        console.log("sending now");
+        console.log(
+          "https://" + new URL(current_params.website).hostname + "/*"
+        );
         chrome.tabs.query(
-          { active: true, currentWindow: true },
-          function (tabs) {
+          {
+            active: true,
+            url: "https://" + new URL(current_params.website).hostname + "/*",
+          },
+          async function (tabs) {
             if (!tabs.length) throw new Error("Tab not found");
-            chrome.tabs.sendMessage(tabs?.[0]?.id ?? 0, new_message);
+            try {
+              await send_message_to_tab(tabs?.[0]?.id ?? 0, new_message);
+            } catch (error) {
+              if (tried_save_pass == 0) {
+                tried_save_pass++;
+                setTimeout(async () => {
+                  await send_message_to_tab(tabs?.[0]?.id ?? 0, new_message);
+                }, 4000);
+              }
+            }
           }
         );
-      }, 500);
+      }, 2000);
     }
   }
 });
+
+const send_message_to_tab = async (tabId: number, m: Message<any>) => {
+  return await chrome.tabs.sendMessage(tabId, m);
+};
 
 export interface Data {
   id: string;

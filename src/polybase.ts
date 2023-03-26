@@ -17,6 +17,8 @@ chrome.storage.session.get(WALLET_PRIV_KEY).then((e) => {
   if (!privKey) {
     chrome.tabs.create({ url: "index.html" });
   }
+  console.log("creating wallet with priv key", privKey);
+
   wallet = new Wallet(privKey.newValue);
 });
 chrome.storage.session.onChanged.addListener((e) => {
@@ -24,6 +26,7 @@ chrome.storage.session.onChanged.addListener((e) => {
   if (!privKey) {
     chrome.tabs.create({ url: "index.html" });
   }
+  console.log("creating wallet with priv key", privKey);
   wallet = new Wallet(privKey.newValue);
 });
 

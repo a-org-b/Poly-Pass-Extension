@@ -32,20 +32,20 @@ const MyPasswords = () => {
 
   return (
     <>
-      <div className="py-5">
-        <h1 className="text-2xl font-bold ml-4">PolyPass</h1>
-
-        <hr className="border-gray-300 mx-3 mt-5" />
+      <div className="py-5 bg-gray-200 mb-4">
+        <h1 className="text-2xl font-extrabold ml-4 tracking-wider">
+          PolyPass
+        </h1>
       </div>
       {AllData.map((item) => (
         <div className="flex justify-around pb-5" key={item.data["id"]}>
           <div>
-            <div className="inline-block ml-4">
-              <p className="text-lg inline-block font-medium w-28 whitespace-nowrap overflow-hidden text-ellipsis">
+            <div className="inline-block">
+              <p className="text-gray-700 text-lg inline-block font-semibold w-36 whitespace-nowrap overflow-hidden text-ellipsis">
                 {item.data["url"]}
               </p>{" "}
               <br />
-              <p className="text-gray-700 inline-block w-28 whitespace-nowrap overflow-hidden text-ellipsis">
+              <p className="text-gray-700 inline-block w-36 whitespace-nowrap overflow-hidden text-ellipsis">
                 {item.data["username"]}
               </p>
             </div>
@@ -55,7 +55,7 @@ const MyPasswords = () => {
             className="fill-btn"
             onClick={() => navigateDetails(item.data["id"])}
           >
-            <span className="fill-btn-txt">Fill </span>
+            <span className="fill-btn-txt tracking-wide">View</span>
           </button>
         </div>
       ))}

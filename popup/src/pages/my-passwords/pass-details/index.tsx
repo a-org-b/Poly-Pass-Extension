@@ -1,12 +1,19 @@
 import React, { MouseEventHandler, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { usePolyBase } from "../../../hooks/usePolyBase";
-
+import { useNavigate } from "react-router-dom";
 
 const PassDetails = () => {
   let { id }: any = useParams();
+  const navigate = useNavigate();
 
-  const {getRecordById,decryptMergedPass,deleteRecord,updatePassword,updateUsername} = usePolyBase();
+  const {
+    getRecordById,
+    decryptMergedPass,
+    deleteRecord,
+    updatePassword,
+    updateUsername,
+  } = usePolyBase();
   interface record {
     id: string;
     password: string;
@@ -40,40 +47,61 @@ const PassDetails = () => {
     deleteRecord(id);
   };
 
-  const editUsername = () => {
-    updateUsername(Data.id, Data.username);
-  };
-
-  const editPassword = () => {
+  const editAll = () => {
     updatePassword(Data.id, Data.password);
+    updateUsername(Data.id, Data.username);
   };
   const showPassword = () => {
     setPassHidden(false);
   };
 
   return (
-    <div className="p-5">
-      <div className="text-3xl font-semibold pb-5">{Data.url}</div>
-      <div className="flex-row mb-5">
+    <div>
+      <div className="top flex flex-row bg-gray-200 align-middle mb-1 px-2 py-2">
+        <button
+          onClick={() => navigate("/  my-passwords")}
+          className="back bg-blue-300 text-blue-700 mr-2 p-1 w-8 h-8 align-middle justify-center flex rounded-full font-semibold"
+        >
+          {" < "}
+        </button>
+        <div className="text-xl font-bold ">Details</div>
+      </div>
+      <div className="flex-row flex justify-between">
+        <div className="text-xl font-bold align-middle ml-3 my-3">
+          {Data.url}
+        </div>
+        <button
+          id="delete"
+          className="rounded-lg py-1 px-4 border-2 border-red-500 text-red-500 hover:bg-red-600 hover:text-red-100 duration-300 m-2"
+          onClick={() => delRecord(id)}
+        >
+          Delete
+        </button>
+      </div>
+      <div className="flex-row mb-3">
+        <div className="pb-1 px-4 text-sm text-slate-600">Username</div>
         <input
-          className="w-32 py-1 px-3 mr-1 rounded-lg"
+          style={{ width: "-webkit-fill-available" }}
+          className="py-1 px-3 mx-2 rounded-lg bg-blue-100"
           type="text"
           name=""
           id="usernameBox"
           value={Data.username}
           onChange={(e) => setData({ ...Data, username: e.target.value })}
         />
-        <button
+        {/* <button
           className="ml-2 rounded-lg py-1 px-3 border-2 border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-blue-100 duration-300"
           id="editUsername"
           onClick={(e) => editUsername()}
         >
           update
-        </button>
+        </button> */}
       </div>
       <div className="flex-row mb-5">
+        <div className="pb-1 px-4 text-slate-600 text-sm">Password</div>
         <input
-          className="w-32 py-1 px-3 mr-1 rounded-lg"
+          style={{ width: "-webkit-fill-available" }}
+          className="py-1 px-3 mx-2 rounded-lg bg-blue-100 align-middle"
           type="text"
           name=""
           id="passwordBox"
@@ -84,8 +112,10 @@ const PassDetails = () => {
               : (e) => setData({ ...Data, password: e.target.value })
           }
         />
+      </div>
+      <div className="flex flex-row mb-2">
         <button
-          className="ml-2 rounded-lg py-1 px-3 border-2 border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-blue-100 duration-300"
+          className="ml-2 mr-2 rounded-lg py-1 px-3 border-2 border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-blue-100 duration-300"
           id="showPassword"
           onClick={() => showPassword()}
         >
@@ -94,19 +124,11 @@ const PassDetails = () => {
         <button
           className="ml-2 rounded-lg py-1 px-3 border-2 border-blue-500 text-blue-500 hover:bg-blue-600 hover:text-blue-100 duration-300"
           id="showPassword"
-          onClick={() => editPassword()}
+          onClick={() => editAll()}
         >
           update
         </button>
       </div>
-
-      <button
-        id="delete"
-        className="rounded-lg py-1 px-4 border-2 border-red-500 text-red-500 hover:bg-red-600 hover:text-red-100 duration-300"
-        onClick={() => delRecord(id)}
-      >
-        del
-      </button>
     </div>
   );
 };

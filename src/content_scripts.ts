@@ -75,7 +75,6 @@ const on_load = () => {
     document.querySelector("input#username") ||
     document.querySelector("input#userid") ||
     document.querySelector('input[autocomplete="username"]');
-  console.log("username ele", username_element);
 
   const password_element: HTMLInputElement | null =
     document.querySelector("input#password") ||
@@ -162,8 +161,8 @@ const on_load = () => {
      color:black;
      cursor: pointer;
      ">View login</div>`;
-    username_element?.parentElement?.appendChild(drop_down_btn_element);
-    username_element?.parentElement?.appendChild(drop_down_element);
+    document.getElementsByTagName("body")[0].appendChild(drop_down_btn_element);
+    document.getElementsByTagName("body")[0].appendChild(drop_down_element);
 
     drop_down_btn_element.onclick = () => {
       const _ele = drop_down_element.firstElementChild as HTMLElement;

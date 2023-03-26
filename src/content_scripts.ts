@@ -128,7 +128,7 @@ const on_load = () => {
     }
     const passwords = res;
     const list_str = passwords
-      .map((e) => `<p class="usernames" style="margin:-4px;" id="${e.password}"> ${e.username} </p>`)
+      .map((e) => `<div class="usernames" style="padding:12px 8px; border:1px solid black;" id="${e.password}"> ${e.username} </div>`)
       .join(" ");
 
     const drop_down_element = document.createElement("div");
@@ -138,7 +138,6 @@ const on_load = () => {
     position:fixed;
     top:10%;
     left:4%;  
-    padding:16px;
     cursor:pointer;
     color:black;
     background-color: #eeeeee;

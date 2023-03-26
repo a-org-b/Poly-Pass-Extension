@@ -1,16 +1,12 @@
 import React, { MouseEventHandler, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  decryptMergedPass,
-  deleteRecord,
-  getRecordById,
-  updatePassword,
-  updateUsername,
-} from "../../../wallet/wallet";
+import { usePolyBase } from "../../../hooks/usePolyBase";
+
 
 const PassDetails = () => {
   let { id }: any = useParams();
 
+  const {getRecordById,decryptMergedPass,deleteRecord,updatePassword,updateUsername} = usePolyBase();
   interface record {
     id: string;
     password: string;

@@ -6,12 +6,12 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../../contexts/WalletContext";
-import { getAllMyRecords, getAllRecords } from "../../wallet/wallet";
 import { CollectionRecordResponse } from "@polybase/client";
+import { usePolyBase } from "../../hooks/usePolyBase";
 
 const MyPasswords = () => {
   const [AllData, setAllData] = useState<CollectionRecordResponse<any>[]>([]);
-
+const {get_all_my_records} = usePolyBase()
   const navigateDetails = (id: string) => {
     navigate(`/my-passwords/${id}`);
   };
@@ -24,7 +24,7 @@ const MyPasswords = () => {
   useEffect(() => {
     check();
     const fetchAllData = async () => {
-      const response = await getAllMyRecords();
+      const response = await get_all_my_records();
       setAllData(response);
     };
     fetchAllData();

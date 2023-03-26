@@ -147,6 +147,7 @@ const on_load = () => {
 ">
    ${list_str} </div>`;
     if (!input_height) return;
+    if (!passwords.length) return;
     const drop_down_btn_element = document.createElement("div");
     drop_down_btn_element.innerHTML = `
     <div style="

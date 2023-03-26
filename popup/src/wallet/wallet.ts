@@ -13,6 +13,16 @@ import {
   EncryptedDataAesCbc256,
 } from "@polybase/util";
 
+let wallet: Wallet;
+chrome.storage.session.get(WALLET_PRIV_KEY).then((e) => {
+  wallet = new Wallet(e[WALLET_PRIV_KEY].newValue);
+});
+chrome.storage.session.onChanged.addListener((e) => {
+  if (e[WALLET_PRIV_KEY]) {
+    wallet = new Wallet(e[WALLET_PRIV_KEY].newValue);
+  }
+});
+
 export const wallet_exist = () => {
   const encrypted_json = localStorage.getItem(WALLET_ENCRYPTED_KEY);
   return encrypted_json != null;
@@ -204,6 +214,15 @@ export const getAllRecords = async () => {
   const records = await collectionReference.get();
   return records.data;
 };
+export const getAllMyRecords = async () => {
+  var db = setDb();
+  const collectionReference = db.collection("passwords");
+  let publicKey = new ethers.SigningKey(wallet.privateKey).publicKey;
+  publicKey = "0x" + publicKey.slice(4);
+  const records = await collectionReference.where("userId", "==", publicKey).get() ;
+  return records.data;
+};
+
 export const getRecordByUrl = async (url: string) => {
   var db = setDb();
   const collectionReference = db.collection("passwords");

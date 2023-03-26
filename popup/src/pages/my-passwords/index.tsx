@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { WalletContext } from "../../contexts/WalletContext";
-import { getAllRecords } from "../../wallet/wallet";
+import { getAllMyRecords, getAllRecords } from "../../wallet/wallet";
 import { CollectionRecordResponse } from "@polybase/client";
 
 const MyPasswords = () => {
@@ -24,7 +24,7 @@ const MyPasswords = () => {
   useEffect(() => {
     check();
     const fetchAllData = async () => {
-      const response = await getAllRecords();
+      const response = await getAllMyRecords();
       setAllData(response);
     };
     fetchAllData();
